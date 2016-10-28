@@ -45,6 +45,11 @@ namespace SimpleStaticFileServer
 
             WebApp.Start(new StartOptions(url));
 
+            //调用系统默认的浏览器
+            Console.WriteLine("Try to open ... ");
+            System.Diagnostics.Process.Start(url);
+
+
             Console.ReadLine();
 
         }
