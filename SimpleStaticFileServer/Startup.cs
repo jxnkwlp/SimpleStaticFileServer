@@ -12,14 +12,6 @@ namespace SimpleStaticFileServer
     {
         public void Configuration(IAppBuilder app)
         {
-            Console.WriteLine();
-            app.Use(async (context, next) =>
-            {
-                Console.WriteLine("[" + context.Response.StatusCode + "] " + context.Request.Uri);
-
-                await next();
-            });
-
             if (!Directory.Exists(Program.WebRoot))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -43,7 +35,16 @@ namespace SimpleStaticFileServer
             };
 
             app.UseFileServer(fileServerOptions);
+            //app.UseStaticFiles(new StaticFileOptions() { FileSystem = fileSystem });
 
+
+            Console.WriteLine();
+            app.Use(async (context, next) =>
+            {
+                Console.WriteLine("[" + context.Request.Method + "] " + context.Request.Uri);
+
+                await next();
+            });
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
+using SimpleStaticFileServer.Properties;
 
 namespace SimpleStaticFileServer
 {
@@ -34,9 +35,18 @@ namespace SimpleStaticFileServer
                 }
             }
 
+            if (!root.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+            {
+                root += Path.DirectorySeparatorChar;
+            }
+
+
             WebRoot = root;
 
-            var port = RandPort();
+            int port = GetPort(root);
+
+            if (port == 0)
+                port = RandPort();
 
             string url = string.Format("{0}:{1}", "http://127.0.0.1", port);
 
@@ -49,10 +59,81 @@ namespace SimpleStaticFileServer
             Console.WriteLine("Try to open ... ");
             System.Diagnostics.Process.Start(url);
 
+            Save(port, root);
 
             Console.ReadLine();
 
         }
+
+        // {path}:{port}
+        static int GetPort(string path)
+        {
+            var all = GetAllMaps();
+
+            if (all.ContainsKey(path))
+                return all[path];
+
+            return 0;
+        }
+
+        static void Save(int port, string path)
+        {
+            var all = GetAllMaps();
+
+            all[path] = port;
+
+            foreach (var item in all)
+            {
+                var str = string.Format("{0}|{1}", item.Key, item.Value);
+
+                if (Settings.Default.DirectoryMapps == null)
+                {
+                    Settings.Default.DirectoryMapps = new System.Collections.Specialized.StringCollection();
+                }
+
+                if (!Settings.Default.DirectoryMapps.Contains(str))
+                {
+                    Settings.Default.DirectoryMapps.Add(str);
+                }
+            }
+
+            Settings.Default.Save();
+        }
+
+        static IDictionary<string, int> GetAllMaps()
+        {
+            Dictionary<string, int> maps = new Dictionary<string, int>();
+
+            var all = Settings.Default.DirectoryMapps;
+
+            if (all == null)
+                return maps;
+
+            foreach (var item in all)
+            {
+                var map = ParseItem(item);
+
+                if (map != null)
+                    maps.Add(map[0], int.Parse(map[1]));
+
+            }
+
+            return maps;
+        }
+
+        static string[] ParseItem(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return null;
+
+            var i = str.IndexOf("|");
+            if (i <= 0)
+                return null;
+
+
+            return str.Split('|');
+        }
+
 
         static string GetEnterDirectory()
         {
