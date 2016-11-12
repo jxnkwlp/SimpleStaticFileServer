@@ -47,6 +47,7 @@
             // 
             // listBox1
             // 
+            this.listBox1.AllowDrop = true;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 12;
             this.listBox1.Items.AddRange(new object[] {
@@ -57,6 +58,8 @@
             this.listBox1.Size = new System.Drawing.Size(202, 256);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listBox1_DragDrop);
+            this.listBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox1_DragEnter);
             // 
             // btn_open_brower
             // 
@@ -103,8 +106,10 @@
             // label_selected
             // 
             this.label_selected.Name = "label_selected";
-            this.label_selected.Size = new System.Drawing.Size(71, 17);
+            this.label_selected.Size = new System.Drawing.Size(292, 17);
+            this.label_selected.Spring = true;
             this.label_selected.Text = "E:\\wwroot\\";
+            this.label_selected.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_open_explorer
             // 
@@ -121,7 +126,7 @@
             // 
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Text = "SimpleStaticFileServer";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
@@ -141,6 +146,7 @@
             // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(307, 299);

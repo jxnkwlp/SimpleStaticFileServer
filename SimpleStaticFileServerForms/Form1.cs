@@ -25,6 +25,8 @@ namespace SimpleStaticFileServerForms
         public Form1()
         {
             InitializeComponent();
+
+            this.AllowDrop = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -63,7 +65,7 @@ namespace SimpleStaticFileServerForms
                 btn_remove.Enabled = true;
 
                 label_selected.Text = listBox1.SelectedItem.ToString();
-
+                label_selected.ToolTipText = label_selected.Text;
             }
         }
 
@@ -258,6 +260,39 @@ namespace SimpleStaticFileServerForms
             Application.Exit();
 
         }
+
+        private void listBox1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Link;
+        }
+
+        private void listBox1_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] dirs = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            if (dirs != null)
+            {
+                foreach (var selectedPath in dirs)
+                {
+                    if (!Directory.Exists(selectedPath))
+                    {
+                        MessageBox.Show(string.Format("选择的文件夹'{0}'不存在！", selectedPath));
+                    }
+                    else
+                    {
+                        if (!listBox1.Items.Cast<string>().Any(t => t.Equals(selectedPath)))
+                        {
+                            listBox1.Items.Add(selectedPath);
+
+                            XmlConfigHelper.AddOrUpdate(new Code.Site() { Path = selectedPath });
+                        }
+                    }
+                }
+            }
+
+        }
+
+
     }
 
     //public class Startup
