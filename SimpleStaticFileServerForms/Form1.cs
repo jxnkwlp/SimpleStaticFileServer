@@ -212,6 +212,52 @@ namespace SimpleStaticFileServerForms
 
             return rand.Next(10000, 20000);
         }
+
+        private void Form1_MinimumSizeChanged(object sender, EventArgs e)
+        {
+            HideForm();
+
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowForm();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+
+                HideForm();
+
+                this.notifyIcon1.BalloonTipText = "双击可以再次显示窗口";
+                this.notifyIcon1.ShowBalloonTip(3);
+            }
+
+        }
+
+        private void HideForm()
+        {
+            this.ShowInTaskbar = false;
+            this.Hide();
+        }
+
+        private void ShowForm()
+        {
+            this.ShowInTaskbar = true;
+            this.Focus();
+            this.Activate();
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+
+        }
     }
 
     //public class Startup
