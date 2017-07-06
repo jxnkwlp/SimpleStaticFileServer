@@ -12,7 +12,7 @@ namespace SimpleStaticFileServerForms.Code
 {
     static class XmlConfigHelper
     {
-        static string XmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SimpleStaticFileServerForms.config");
+        static string XmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SimpleStaticFileServer.config");
 
         //static XDocument GetDocument()
         //{

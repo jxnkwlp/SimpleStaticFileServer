@@ -1,19 +1,14 @@
-﻿using System;
+﻿using Microsoft.Owin.FileSystems;
+using Microsoft.Owin.Hosting;
+using Microsoft.Owin.StaticFiles;
+using Owin;
+using SimpleStaticFileServerForms.Code;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
-using SimpleStaticFileServerForms.Code;
-using Microsoft.Owin.Hosting;
-using Owin;
-using Microsoft.Owin.FileSystems;
-using Microsoft.Owin.StaticFiles;
 
 namespace SimpleStaticFileServerForms
 {
@@ -117,6 +112,19 @@ namespace SimpleStaticFileServerForms
 
         private void btn_open_brower_Click(object sender, EventArgs e)
         {
+            OpenSelected();
+        }
+
+        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            OpenSelected();
+        }
+
+        private void OpenSelected()
+        {
+            if (listBox1.SelectedItem == null)
+                return;
+
             var selectPath = listBox1.SelectedItem.ToString();
 
             int port = XmlConfigHelper.GetPort(selectPath);
@@ -169,9 +177,7 @@ namespace SimpleStaticFileServerForms
 
             } while (!success);
 
-
         }
-
 
         void Open(string path)
         {
@@ -188,17 +194,19 @@ namespace SimpleStaticFileServerForms
             {
                 // WebApp.Start (new StartOptions(url) { AppStartup = typeof(Startup).AssemblyQualifiedName });
 
+                var fileSystem = new PhysicalFileSystem(path);
+
+                var fileServerOptions = new FileServerOptions()
+                {
+                    FileSystem = fileSystem,
+                    EnableDefaultFiles = true,
+                    EnableDirectoryBrowsing = true,
+                };
+
+                fileServerOptions.StaticFileOptions.ContentTypeProvider = new CustomContentTypeProvider();
+
                 WebApp.Start(new StartOptions(url), (app) =>
                 {
-                    var fileSystem = new PhysicalFileSystem(path);
-
-                    var fileServerOptions = new FileServerOptions()
-                    {
-                        FileSystem = fileSystem,
-                        EnableDefaultFiles = true,
-                        EnableDirectoryBrowsing = true,
-                    };
-
                     app.UseFileServer(fileServerOptions);
                 });
 
